@@ -55,9 +55,26 @@ namespace MummyProject
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Burials}/{action=Index}/{id?}");
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Burials}/{action=Index}/{id?}");
+
+            endpoints.MapControllerRoute("page",
+                "{page:int}",
+                    new { Controller = "Burials", action = "Index" });
+
+                endpoints.MapControllerRoute("age",
+                    "{age}",
+                    new { Controller = "Burials", action = "Index", page = 1 });
+
+                endpoints.MapControllerRoute("pagination",
+                    "Burials/{page}",
+                    new { Controller = "Burials", action = "Index" });
+
+
+
+
+
             });
         }
     }
