@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MummyProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,11 @@ namespace MummyProject
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<MummyDbContext>(options =>
+            {
+                options.UseSqlite(Configuration["ConnectionStrings:BurialConnection"]);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,9 +55,26 @@ namespace MummyProject
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Burials}/{action=Index}/{id?}");
+
+            endpoints.MapControllerRoute("page",
+                "{page:int}",
+                    new { Controller = "Burials", action = "Index" });
+
+                endpoints.MapControllerRoute("age",
+                    "{age}",
+                    new { Controller = "Burials", action = "Index", page = 1 });
+
+                endpoints.MapControllerRoute("pagination",
+                    "Burials/{page}",
+                    new { Controller = "Burials", action = "Index" });
+
+
+
+
+
             });
         }
     }
